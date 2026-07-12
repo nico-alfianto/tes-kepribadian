@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tes Kepribadian Chibi</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Caveat:wght@700&display=swap');
+:root{
+  --bg1:#6366f1; --bg2:#a78bfa; --bg3:#f472b6; --card:#fff; --text:#1e293b;
+}
+body.dark{
+  --bg1:#1e1b4b; --bg2:#312e81; --bg3:#4c1d95; --card:#1e293b; --text:#f1f5f9;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Nunito', sans-serif; }
+body {
+  background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 50%, var(--bg3) 100%);
+  min-height: 100vh; padding: 20px; display: flex; justify-content: center; align-items: center;
+  color: var(--text);
+}
+.container {
+  background: var(--card); width: 100%; max-width: 700px; padding: 30px;
+  border-radius: 30px; box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+.dark-toggle { position: absolute; top:20px; right:20px; background:var(--card); border:none; padding:8px 12px; border-radius:12px; cursor:pointer; font-weight:900; }
+
+.landing-header { text-align: center; margin-bottom: 20px; }
+.landing-icon { font-size: 80px; animation: float 3s ease-in-out infinite; }
+@keyframes float { 0%,100%{transform: translateY(0);} 50%{transform: translateY(-15px);} }
+.landing-title {
+  font-family: 'Caveat', cursive; font-size: 42px; color: #6366f1; margin: 10px 0;
+}
+
+.leaderboard-home {
+  background: linear-gradient(135deg, #ddd6fe, #fce7f3); padding: 15px; border-radius: 20px; margin: 20px 0;
+}
+.leaderboard-home h3 { text-align: center; color: #6d28d9; margin-bottom: 10px; }
+.lb-item {
+  display: flex; justify-content: space-between; background: white; padding: 8px 12px;
+  border-radius: 12px; margin-bottom: 6px; font-weight: 800; font-size: 13px;
+}
+.lb-item.gold { background: #fef3c7; border: 2px solid #fbbf24; }
+
+.form-group { margin-bottom: 15px; }
+.form-group label {
+  display: block; font-weight: 900; color: var(--text); font-size: 13px;
+  margin-bottom: 6px;
+}
+.form-data { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.form-data input {
+  width: 100%; padding: 12px; border: 2px solid #c7d2fe; border-radius: 12px; font-weight: 700;
+  background: var(--card); color: var(--text);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border: none; padding: 16px;
+  border-radius: 16px; font-weight: 900; cursor: pointer; font-size: 16px; width: 100%; margin-top: 10px;
+}
+
+.progress-bar {
+  background: #e0e7ff; height: 14px; border-radius: 20px; margin-bottom: 20px; overflow: hidden;
+}
+.progress {
+  background: linear-gradient(90deg, #6366f1, #a78bfa); height: 100%;
+  border-radius: 20px; transition: 0.4s; width: 0%;
+}
+.question-text { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 15px; text-align: center; }
+.option {
+  background: #f8fafc; padding: 14px; border-radius: 14px; margin-bottom: 10px;
+  cursor: pointer; border: 2px solid #e2e8f0; font-weight: 700; color: #334155;
+  transition: 0.2s;
+}
+.option:hover { transform: scale(1.02); }
+.option.selected {
+  background: #6366f1; color: white; border-color: #4f46e5;
+}
+
+/* HASIL CARD AESTHETIC + CHIBI */
+#resultCard {
+  background: linear-gradient(135deg, #6366f1 0%, #a78bfa 50%, #f472b6 100%);
+  color: white; padding: 0; border-radius: 25px; overflow: hidden; margin-bottom: 15px;
+  box-shadow: 0 10px 30px rgba(99,102,241,0.4);
+}
+.result-header {
+  padding: 25px; text-align: center; position: relative;
+}
+.chibi {
+  width: 100px; height: 100px; margin: 0 auto 10px; background: white;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+.badge-grid { display: flex; gap: 8px; justify-content: center; margin: 10px 0; flex-wrap: wrap; }
+.badge { background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 900; }
+
+.card {
+  background: var(--card); padding: 18px; border-radius: 18px; margin: 12px 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.horoscope { background: linear-gradient(135deg, #fde047, #fbbf24); color: #78350f; }
+
+.badge-rarity { background: linear-gradient(135deg, #fbbf24, #f59e0b); color:white; padding:10px; border-radius:15px; text-align:center; font-weight:900; margin:10px 0; }
+
+.share-btn-single {
+  background: linear-gradient(135deg, #25D366, #128C7E); color: white; border: none; padding: 16px;
+  border-radius: 16px; font-weight: 900; cursor: pointer; font-size: 16px; width: 100%; margin-top: 10px;
+}
+
+.modal {
+  display: none; position: fixed; top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 999;
+}
+.modal.active { display: flex; }
+.modal-content {
+  background: var(--card); padding: 25px; border-radius: 20px; max-width: 600px; width: 90%;
+}
+</style>
+</head>
+<body>
+<button class="dark-toggle" onclick="toggleDark()">🌙</button>
+
+<div class="container">
+
+  <!-- LANDING + LEADERBOARD -->
+  <div class="page active" id="landingPage">
+    <div class="landing-header">
+      <div class="landing-icon">🎭</div>
+      <h1 class="landing-title">Tes Kepribadian Chibi</h1>
+      <p style="color:#64748b;">Cuma 30 detik! Tau tipe + zodiak + chibi kamu</p>
+    </div>
+
+    <div class="leaderboard-home">
+      <h3>🏆 Leaderboard Global</h3>
+      <div id="leaderboardHome"></div>
+      <p style="text-align:center; font-size:12px; margin-top:8px;">Total <span id="totalUsers">0</span> orang udah tes</p>
+    </div>
+
+    <div class="form-group"><label>👤 Nama Kamu</label><input type="text" id="userName" placeholder="Contoh: Budi"></div>
+    <div class="form-data">
+      <div class="form-group"><label>📅 Tanggal Lahir Kamu</label><input type="date" id="birthDate"></div>
+      <div class="form-group"><label>⏰ Jam Lahir Kamu</label><input type="time" id="birthTime"></div>
+    </div>
+    <button class="btn-primary" onclick="startQuiz()">Mulai Tes 🚀</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="page" id="quizPage">
+    <div class="progress-bar"><div class="progress" id="progress"></div></div>
+    <div id="quizArea"></div>
+  </div>
+
+  <!-- HASIL -->
+  <div class="page" id="resultPage">
+    <div id="resultCard">
+      <div class="result-header">
+        <div class="chibi" id="chibiIcon">🧠</div>
+        <h2 id="resultType" style="font-size:36px;">INTP</h2>
+        <h3 id="resultName">The Analyst</h3>
+        <div class="badge-grid" id="badgeGrid"></div>
+        <p id="resultDesc" style="margin-top:10px; font-size:14px;"></p>
+      </div>
+    </div>
+
+    <div class="badge-rarity" id="rarityBadge"></div>
+
+    <div class="card"><h3>📊 Grafik Kepribadian</h3><canvas id="radarChart"></canvas></div>
+
+    <div class="card horoscope">
+      <h3>🔮 Quote Hari Ini</h3>
+      <p id="dailyQuote"></p>
+    </div>
+
+    <div class="card">
+      <h3>💘 Kecocokan Cinta</h3>
+      <p id="loveMatch"></p>
+    </div>
+
+    <button class="share-btn-single" onclick="shareAll()">📤 Bagikan Hasil</button>
+    <button class="btn-primary" onclick="openCompare()">👥 Bandingin Temen</button>
+    <button class="btn-primary" onclick="retakeQuiz()">🔄 Tes Lagi</button>
+  </div>
+
+</div>
+
+<!-- MODAL BANDINGIN -->
+<div class="modal" id="compareModal">
+  <div class="modal-content">
+    <h3>👥 Bandingin sama Temen</h3>
+    <input type="text" id="friendName" placeholder="Nama temen" style="width:100%; padding:12px; border-radius:12px; margin:10px 0;">
+    <select id="friendType" style="width:100%; padding:12px; border-radius:12px; margin-bottom:10px;">
+      <option value="">Pilih tipe temen</option><option>ETJ</option><option>ETP</option><option>EFJ</option><option>EFP</option><option>ITJ</option><option>ITP</option><option>IFJ</option><option>IFP</option>
+    </select>
+    <div id="compareResult"></div>
+    <button onclick="compare()" class="btn-primary">Bandingin</button>
+    <button onclick="closeCompare()" class="btn-primary">Tutup</button>
+  </div>
+</div>
+
+<script>
+let questionSets = [
+  [{q:"Saat deadline mepet...",a:[{t:"Bikin plan",v:"J"},{t:"Improvisasi",v:"P"}]},{q:"Setelah nongkrong...",a:[{t:"Masih semangat",v:"E"},{t:"Butuh me time",v:"I"}]},{q:"Ambil keputusan...",a:[{t:"Logika",v:"T"},{t:"Perasaan",v:"F"}]}],
+  [{q:"Di pesta kamu...",a:[{t:"Kenalan ke semua",v:"E"},{t:"Ngobrol 1-2 orang",v:"I"}]},{q:"Lebih percaya...",a:[{t:"Fakta",v:"T"},{t:"Intuisi",v:"F"}]},{q:"Rumah kamu...",a:[{t:"Rapi",v:"J"},{t:"Berantakan nyaman",v:"P"}]}]
+];
+let currentSet = 0;
+
+const chibiIcons = {
+  "ITJ":"🧠", "ITP":"🔧", "IFJ":"❤️", "IFP":"🎨",
+  "ETJ":"👑", "ETP":"📢", "EFJ":"🤝", "EFP":"✨"
+};
+
+const types = {
+  "ITJ":{name:"The Analyst",desc:"Strategis dan logis.",match:["EFJ"],rarity:"8% Populasi",quote:"Ide besar lahir dari pemikiran tenang."},
+  "ITP":{name:"The Problem Solver",desc:"Fleksibel dan jago masalah.",match:["EFJ"],rarity:"5% Populasi",quote:"Setiap masalah ada solusi."},
+  "IFJ":{name:"The Supporter",desc:"Hangat dan peduli.",match:["ETP"],rarity:"12% Populasi",quote:"Kebaikan kecil berdampak besar."},
+  "IFP":{name:"The Idealist",desc:"Imajinasi tinggi.",match:["ETJ"],rarity:"4% Populasi",quote:"Ikuti kata hatimu."},
+  "ETJ":{name:"The Leader",desc:"Tegas dan natural leader.",match:["IFP"],rarity:"3% Populasi",quote:"Pemimpin melayani timnya."},
+  "ETP":{name:"The Negotiator",desc:"Energik dan persuasif.",match:["IFJ"],rarity:"7% Populasi",quote:"Ambil aksi sekarang."},
+  "EFJ":{name:"The Harmonizer",desc:"Sosial dan perhatian.",match:["ITJ"],rarity:"11% Populasi",quote:"Bersama kita kuat."},
+  "EFP":{name:"The Enthusiast",desc:"Spontan dan ceria.",match:["ITJ"],rarity:"9% Populasi",quote:"Hidup untuk bahagia."},
+};
+
+let currentQ = 0, answers = {E:0,I:0,T:0,F:0,J:0,P:0}, selectedAnswer = null, myResult = {};
+
+function toggleDark(){ document.body.classList.toggle('dark'); }
+
+function showLeaderboardHome(){
+  let data = JSON.parse(localStorage.getItem('mbtiStats')) || {};
+  let total = Object.values(data).reduce((a,b) => a+b, 0);
+  document.getElementById('totalUsers').innerText = total;
+  let sorted = Object.entries(data).sort((a,b) => b[1] - a[1]).slice(0,3);
+  document.getElementById('leaderboardHome').innerHTML = sorted.map(([type, count], i) => `
+    <div class="lb-item ${i==0?'gold':''}"><span>#${i+1} ${type}</span><span>${count} orang</span></div>
+  `).join('') || '<div style="text-align:center;">Belum ada data</div>';
+}
+
+function showPage(id){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+
+function startQuiz(){ if(!userName.value){alert("Isi nama!");return;} showPage('quizPage'); renderQuestion(); }
+
+function renderQuestion(){
+  const q = questionSets[currentSet][currentQ];
+  progress.style.width = ((currentQ + 1) / 3) * 100 + '%';
+  quizArea.innerHTML = `<div><h3 style="text-align:center;">Soal ${currentQ + 1} / 3</h3><div class="question-text">${q.q}</div>${q.a.map((opt,i)=>`<div class="option" onclick="selectOption('${opt.v}',${i})">${opt.t}</div>`).join('')}<button class="btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>Lanjut</button></div>`;
+}
+
+function selectOption(v,i){ selectedAnswer=v; document.querySelectorAll('.option').forEach((el,idx)=>{el.classList.remove('selected'); if(idx===i)el.classList.add('selected');}); nextBtn.disabled=false; }
+
+function nextQuestion(){ answers[selectedAnswer]++; selectedAnswer=null; currentQ++; if(currentQ<3)renderQuestion(); else showResult(); }
+
+function showResult(){
+  const EI=answers.E>answers.I?'E':'I'; const TF=answers.T>answers.F?'T':'F'; const JP=answers.J>answers.P?'J':'P';
+  const type=EI+TF+JP; const data=types[type]; myResult={type,data};
+
+  saveToLeaderboard(type); showLeaderboardHome();
+
+  const zodiak=getZodiak(birthDate.value); const shio=getShio(new Date(birthDate.value).getFullYear());
+  const perE=Math.round(answers.E/(answers.E+answers.I)*100); const perT=Math.round(answers.T/(answers.T+answers.F)*100); const perJ=Math.round(answers.J/(answers.J+answers.P)*100);
+
+  resultType.innerText=type; resultName.innerText=data.name; resultDesc.innerText=data.desc;
+  chibiIcon.innerText = chibiIcons[type];
+  badgeGrid.innerHTML=`<div class="badge">${zodiak.icon} ${zodiak.name}</div><div class="badge">Shio ${shio}</div>`;
+  rarityBadge.innerText=`🏆 Tipe Langka: ${data.rarity}`;
+  dailyQuote.innerText=`"${data.quote}"`;
+  loveMatch.innerText=`Kamu paling cocok sama tipe ${data.match.join(', ')}. Chemistry kalian kuat!`;
+
+  new Chart(document.getElementById('radarChart'),{
+    type:'radar', data:{labels:['E/I','T/F','J/P'], datasets:[{data:[perE,perT,perJ], backgroundColor:'rgba(99,102,241,0.3)', borderColor:'#6366f1'}]}, options:{scales:{r:{beginAtZero:true, max:100}}}
+  });
+
+  showPage('resultPage');
+}
+
+function shareAll(){
+  html2canvas(resultCard).then(canvas=>{
+    const url = canvas.toDataURL();
+    const text = `Aku tipe ${myResult.type} - ${myResult.data.name}! Cek kamu: ${window.location.href}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
+  });
+}
+
+function openCompare(){ compareModal.classList.add('active'); }
+function closeCompare(){ compareModal.classList.remove('active'); }
+function compare(){
+  let ft=friendType.value; let fn=friendName.value||"Temen";
+  let isMatch=types[myResult.type].match.some(m=>ft.startsWith(m[0]));
+  compareResult.innerHTML=`<div style="background:#f0fdf4; padding:15px;"><b>Kamu: ${myResult.type}</b><br><b>${fn}: ${ft}</b><br><br>${isMatch?"🤝 Cocok!":"⚡ Beda! Saling belajar"}</div>`;
+}
+
+function retakeQuiz(){ currentSet=(currentSet+1)%2; currentQ=0; answers={E:0,I:0,T:0,F:0,J:0,P:0}; showPage('quizPage'); renderQuestion(); }
+
+function getZodiak(d){ const date=new Date(d); const day=date.getDate(); const m=date.getMonth()+1; if((m==3&&day>=21)||(m==4&&day<=19))return{icon:"♈",name:"Aries"}; return{icon:"♓",name:"Pisces"}; }
+function getShio(y){ return ["Monyet","Ayam","Anjing","Babi","Tikus","Kerbau","Macan","Kelinci","Naga","Ular","Kuda","Kambing"][y%12]; }
+function saveToLeaderboard(t){ let data=JSON.parse(localStorage.getItem('mbtiStats'))||{}; data[t]=(data[t]||0)+1; localStorage.setItem('mbtiStats',JSON.stringify(data)); }
+
+showLeaderboardHome();
+</script>
+</body>
+</html>
