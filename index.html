@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tes Kepribadian</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Caveat:wght@700&display=swap');
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Nunito', sans-serif; }
+body {
+  background: linear-gradient(135deg, #6366f1 0%, #a78bfa 50%, #f472b6 100%);
+  min-height: 100vh; padding: 20px; display: flex; justify-content: center; align-items: center;
+}
+.container {
+  background: white; width: 100%; max-width: 650px; padding: 30px;
+  border-radius: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+.landing-icon { font-size: 80px; text-align: center; margin-bottom: 15px; }
+.landing-title {
+  font-family: 'Caveat', cursive; font-size: 42px; color: #6366f1;
+  text-align: center; margin-bottom: 10px;
+}
+
+/* FORM DENGAN LABEL */
+.form-group { margin-bottom: 15px; }
+.form-group label {
+  display: block; font-weight: 900; color: #1e40af; font-size: 13px;
+  margin-bottom: 6px;
+}
+.form-data { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.form-data input {
+  width: 100%; padding: 12px; border: 2px solid #c7d2fe; border-radius: 12px; font-weight: 700;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border: none; padding: 16px;
+  border-radius: 16px; font-weight: 900; cursor: pointer; font-size: 16px; width: 100%; margin-top: 10px;
+}
+.btn-secondary {
+  background: #e2e8f0; color: #334155; border: none; padding: 14px;
+  border-radius: 14px; font-weight: 900; cursor: pointer; font-size: 15px; width: 100%; margin-top: 10px;
+}
+
+/* QUIZ */
+.progress-bar {
+  background: #e0e7ff; height: 12px; border-radius: 20px; margin-bottom: 20px; overflow: hidden;
+}
+.progress {
+  background: linear-gradient(90deg, #6366f1, #a78bfa); height: 100%;
+  border-radius: 20px; transition: 0.4s; width: 0%;
+}
+.question-text { font-size: 20px; font-weight: 800; color: #1e3a8a; margin-bottom: 15px; text-align: center; }
+.option {
+  background: #f8fafc; padding: 14px; border-radius: 14px; margin-bottom: 10px;
+  cursor: pointer; border: 2px solid #e2e8f0; font-weight: 700; color: #334155;
+}
+.option.selected {
+  background: #6366f1; color: white; border-color: #4f46e5;
+}
+
+/* HASIL */
+#resultCard {
+  background: linear-gradient(135deg, #6366f1, #a78bfa);
+  color: white; padding: 25px; border-radius: 20px; text-align: center; margin-bottom: 15px;
+}
+.badge-grid { display: flex; gap: 8px; justify-content: center; margin: 10px 0; flex-wrap: wrap; }
+.badge { background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 900; }
+
+.card {
+  background: #f8fafc; padding: 16px; border-radius: 16px; margin: 12px 0;
+  border-left: 4px solid #6366f1;
+}
+.horoscope { background: linear-gradient(135deg, #fde047, #fbbf24); border: none; color: #78350f; }
+
+.leaderboard-item {
+  display: flex; justify-content: space-between; align-items: center;
+  background: white; padding: 10px 15px; border-radius: 12px; margin-bottom: 8px;
+  border: 2px solid #e2e8f0;
+}
+.rank-1 { border-color: #fbbf24; background: #fef3c7; }
+
+.share-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px;
+}
+.share-btn {
+  border: none; padding: 12px; border-radius: 14px; font-weight: 900;
+  cursor: pointer; font-size: 13px; color: white;
+}
+.btn-wa { background: #25D366; }
+.btn-png { background: #ec4899; }
+.btn-compare { background: #f59e0b; }
+
+.modal {
+  display: none; position: fixed; top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 999;
+}
+.modal.active { display: flex; }
+.modal-content {
+  background: white; padding: 25px; border-radius: 20px; max-width: 500px; width: 90%;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- PAGE 1: LANDING -->
+  <div class="page active" id="landingPage">
+    <div class="landing-icon">🎭</div>
+    <h1 class="landing-title">Tes Kepribadian 3 Soal</h1>
+    <p style="text-align:center; color:#64748b; margin-bottom:20px;">Cuma 30 detik! Tau tipe kamu + zodiak + ramalan</p>
+
+    <!-- FORM DENGAN LABEL -->
+    <div class="form-group">
+      <label>👤 Nama Kamu</label>
+      <input type="text" id="userName" placeholder="Contoh: Budi">
+    </div>
+
+    <div class="form-data">
+      <div class="form-group">
+        <label>📅 Tanggal Lahir Kamu</label>
+        <input type="date" id="birthDate">
+      </div>
+      <div class="form-group">
+        <label>⏰ Jam Lahir Kamu</label>
+        <input type="time" id="birthTime">
+      </div>
+    </div>
+    <p style="font-size:11px; color:#94a3b8; margin-top:-8px; margin-bottom:15px;">*Jam lahir opsional, buat data lebih lengkap</p>
+
+    <button class="btn-primary" onclick="startQuiz()">Mulai Tes 🚀</button>
+    <button class="btn-secondary" onclick="showLeaderboard()">📊 Lihat Leaderboard</button>
+  </div>
+
+  <!-- PAGE 2: QUIZ -->
+  <div class="page" id="quizPage">
+    <div class="progress-bar"><div class="progress" id="progress"></div></div>
+    <div id="quizArea"></div>
+  </div>
+
+  <!-- PAGE 3: HASIL -->
+  <div class="page" id="resultPage">
+    <div id="resultCard">
+      <h2 id="resultType" style="font-size:40px;">INTP</h2>
+      <h3 id="resultName">The Analyst</h3>
+      <div class="badge-grid" id="badgeGrid"></div>
+      <p id="resultDesc" style="margin-top:10px; font-size:14px;"></p>
+    </div>
+
+    <div class="card">
+      <h3>📊 Analisis Kamu</h3>
+      <div id="scoreContainer"></div>
+    </div>
+
+    <div class="card horoscope">
+      <h3>🔮 Ramalan Hari Ini <span id="todayDate"></span></h3>
+      <p id="horoscopeText"></p>
+    </div>
+
+    <div class="card">
+      <h3>💼 Karir Cocok</h3>
+      <div id="careerTags" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
+    </div>
+
+    <div class="share-grid">
+      <button class="share-btn btn-wa" onclick="shareWA()">WA</button>
+      <button class="share-btn btn-png" onclick="downloadPNG()">Download</button>
+      <button class="share-btn btn-compare" onclick="openCompare()">Bandingin</button>
+    </div>
+    <button class="btn-secondary" onclick="goToLanding()">Tes Lagi</button>
+  </div>
+
+  <!-- PAGE 4: LEADERBOARD -->
+  <div class="page" id="leaderboardPage">
+    <h2 style="text-align:center; color:#6366f1; margin-bottom:15px;">🏆 Leaderboard Global</h2>
+    <p style="text-align:center; color:#64748b; font-size:13px; margin-bottom:15px;">Total <span id="totalUsers">0</span> orang udah tes</p>
+    <div id="leaderboardList"></div>
+    <button class="btn-secondary" onclick="goToLanding()">Kembali</button>
+  </div>
+
+</div>
+
+<!-- MODAL BANDINGIN -->
+<div class="modal" id="compareModal">
+  <div class="modal-content">
+    <h3 style="margin-bottom:15px;">👥 Bandingin sama Temen</h3>
+    <input type="text" id="friendName" placeholder="Nama temen" style="width:100%; padding:12px; border:2px solid #c7d2fe; border-radius:12px; margin-bottom:10px;">
+    <select id="friendType" style="width:100%; padding:12px; border:2px solid #c7d2fe; border-radius:12px; margin-bottom:15px;">
+      <option value="">Pilih tipe temen</option>
+      <option>ETJ</option><option>ETP</option><option>EFJ</option><option>EFP</option>
+      <option>ITJ</option><option>ITP</option><option>IFJ</option><option>IFP</option>
+    </select>
+    <div id="compareResult"></div>
+    <button class="btn-primary" onclick="compare()">Bandingin</button>
+    <button class="btn-secondary" onclick="closeCompare()">Tutup</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const questions = [
+  {q: "Saat deadline mepet dan tim panik, kamu...", a: [{t:"Bikin plan + bagi tugas", v:"J"}, {t:"Kerjain dulu, improvisasi nanti", v:"P"}]},
+  {q: "Setelah seharian nongkrong, kamu...", a: [{t:"Masih semangat", v:"E"}, {t:"Butuh me time", v:"I"}]},
+  {q: "Ambil keputusan kamu pakai...", a: [{t:"Logika + Data", v:"T"}, {t:"Perasaan + Empati", v:"F"}]},
+];
+
+const types = {
+  "ITJ":{name:"The Analyst",desc:"Strategis, logis, dan mandiri.",career:["Analis Data","Programmer"],match:["EFJ","EFP"]},
+  "ITP":{name:"The Problem Solver",desc:"Fleksibel dan jago nyelesaiin masalah.",career:["Developer","Desainer"],match:["EFJ","ETJ"]},
+  "IFJ":{name:"The Supporter",desc:"Hangat, bertanggung jawab, peduli.",career:["HR","Guru"],match:["ETP"]},
+  "IFP":{name:"The Idealist",desc:"Punya nilai kuat dan imajinasi tinggi.",career:["Penulis","Artis"],match:["ETJ"]},
+  "ETJ":{name:"The Leader",desc:"Tegas, terorganisir, natural leader.",career:["Manager","CEO"],match:["IFP","ITP"]},
+  "ETP":{name:"The Negotiator",desc:"Energik, persuasif, jago lapangan.",career:["Sales","Marketing"],match:["IFJ"]},
+  "EFJ":{name:"The Harmonizer",desc:"Sosial, perhatian, jago bikin nyaman.",career:["PR","CS"],match:["ITJ"]},
+  "EFP":{name:"The Enthusiast",desc:"Spontan, ceria, hidup banget.",career:["Content Creator","MC"],match:["ITJ"]},
+};
+
+const horoscopes = {
+  "Aries":"Energi tinggi! Cocok buat mulai proyek baru.",
+  "Taurus":"Fokus ke keuangan. Ada peluang rezeki.",
+  "Gemini":"Komunikasi lancar. Ngobrol bisa buka peluang.",
+  "Cancer":"Dengerin intuisi. Hari buat istirahat.",
+  "Leo":"Kamu pusat perhatian. Pamerin skill.",
+  "Virgo":"Detail kecil penting. Cek ulang kerjaan.",
+  "Libra":"Butuh keseimbangan. Jangan kerja doang.",
+  "Scorpio":"Intensitas tinggi. Cocok buat riset.",
+  "Sagittarius":"Hari buat petualangan dan belajar.",
+  "Capricorn":"Kerja keras dibayar. Tetap konsisten.",
+  "Aquarius":"Ide unik kamu bakal dihargai.",
+  "Pisces":"Kreativitas memuncak. Cocok buat seni."
+};
+
+function getZodiak(dateStr) {
+  const d = new Date(dateStr); const day = d.getDate(); const month = d.getMonth() + 1;
+  if((month==3 && day>=21) || (month==4 && day<=19)) return {icon:"♈", name:"Aries"};
+  if((month==4 && day>=20) || (month==5 && day<=20)) return {icon:"♉", name:"Taurus"};
+  if((month==5 && day>=21) || (month==6 && day<=20)) return {icon:"♊", name:"Gemini"};
+  if((month==6 && day>=21) || (month==7 && day<=22)) return {icon:"♋", name:"Cancer"};
+  if((month==7 && day>=23) || (month==8 && day<=22)) return {icon:"♌", name:"Leo"};
+  if((month==8 && day>=23) || (month==9 && day<=22)) return {icon:"♍", name:"Virgo"};
+  if((month==9 && day>=23) || (month==10 && day<=22)) return {icon:"♎", name:"Libra"};
+  if((month==10 && day>=23) || (month==11 && day<=21)) return {icon:"♏", name:"Scorpio"};
+  if((month==11 && day>=22) || (month==12 && day<=21)) return {icon:"♐", name:"Sagittarius"};
+  if((month==12 && day>=22) || (month==1 && day<=19)) return {icon:"♑", name:"Capricorn"};
+  if((month==1 && day>=20) || (month==2 && day<=18)) return {icon:"♒", name:"Aquarius"};
+  return {icon:"♓", name:"Pisces"};
+}
+
+function getShio(year) {
+  const shio = ["Monyet","Ayam","Anjing","Babi","Tikus","Kerbau","Macan","Kelinci","Naga","Ular","Kuda","Kambing"];
+  return shio[year % 12];
+}
+
+let currentQ = 0, answers = {E:0,I:0,T:0,F:0,J:0,P:0}, selectedAnswer = null;
+let myResult = {};
+
+function saveToLeaderboard(type) {
+  let data = JSON.parse(localStorage.getItem('mbtiStats')) || {};
+  data[type] = (data[type] || 0) + 1;
+  localStorage.setItem('mbtiStats', JSON.stringify(data));
+}
+
+function showLeaderboard() {
+  showPage('leaderboardPage');
+  let data = JSON.parse(localStorage.getItem('mbtiStats')) || {};
+  let total = Object.values(data).reduce((a,b) => a+b, 0);
+  document.getElementById('totalUsers').innerText = total;
+
+  let sorted = Object.entries(data).sort((a,b) => b[1] - a[1]);
+
+  document.getElementById('leaderboardList').innerHTML = sorted.map(([type, count], i) => `
+    <div class="leaderboard-item rank-${i+1}">
+      <div><b>#${i+1}</b> ${type} - ${types[type].name}</div>
+      <div><b>${count}</b> orang</div>
+    </div>
+  `).join('') || '<p style="text-align:center;">Belum ada data</p>';
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startQuiz() {
+  if(!document.getElementById('userName').value) { alert("Isi nama dulu!"); return; }
+  showPage('quizPage');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  document.getElementById('progress').style.width = ((currentQ + 1) / questions.length) * 100 + '%';
+  document.getElementById('quizArea').innerHTML = `
+    <div><h3 style="text-align:center; color:#64748b; font-size:13px;">Soal ${currentQ + 1} / 3</h3>
+    <div class="question-text">${q.q}</div>
+    ${q.a.map((opt, i) => `<div class="option" onclick="selectOption('${opt.v}', ${i})">${opt.t}</div>`).join('')}
+    <button class="btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>Lanjut</button></div>
+  `;
+}
+
+function selectOption(value, i) {
+  selectedAnswer = value;
+  document.querySelectorAll('.option').forEach((el, idx) => {
+    el.classList.remove('selected');
+    if(idx === i) el.classList.add('selected');
+  });
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQuestion() {
+  answers[selectedAnswer]++; selectedAnswer = null; currentQ++;
+  if(currentQ < questions.length) renderQuestion();
+  else showResult();
+}
+
+function showResult() {
+  const name = document.getElementById('userName').value;
+  const birthDate = document.getElementById('birthDate').value;
+
+  const EI = answers.E > answers.I? 'E' : 'I';
+  const TF = answers.T > answers.F? 'T' : 'F';
+  const JP = answers.J > answers.P? 'J' : 'P';
+  const type = EI + TF + JP;
+  const data = types[type];
+
+  saveToLeaderboard(type);
+  myResult = {type, name, data};
+
+  const zodiak = birthDate? getZodiak(birthDate) : {icon:"❓", name:"?"};
+  const shio = birthDate? getShio(new Date(birthDate).getFullYear()) : "?";
+
+  const today = new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long'});
+  document.getElementById('todayDate').innerText = today;
+  document.getElementById('horoscopeText').innerText = horoscopes[zodiak.name];
+
+  const perE = Math.round(answers.E/(answers.E+answers.I)*100);
+  const perT = Math.round(answers.T/(answers.T+answers.F)*100);
+  const perJ = Math.round(answers.J/(answers.J+answers.P)*100);
+
+  document.getElementById('resultType').innerText = type;
+  document.getElementById('resultName').innerText = data.name;
+  document.getElementById('resultDesc').innerText = data.desc;
+
+  document.getElementById('badgeGrid').innerHTML = `
+    <div class="badge">${zodiak.icon} ${zodiak.name}</div>
+    <div class="badge">Shio ${shio}</div>
+  `;
+
+  document.getElementById('scoreContainer').innerHTML = `
+    <div style="font-size:13px; font-weight:700; display:flex; justify-content:space-between; margin-bottom:4px;"><span>Ekstrovert</span><span>${perE}%</span></div><div style="height:8px; background:#e2e8f0; border-radius:10px; margin-bottom:10px;"><div style="height:100%; width:${perE}%; background:linear-gradient(90deg, #6366f1, #8b5cf6); border-radius:10px;"></div></div>
+    <div style="font-size:13px; font-weight:700; display:flex; justify-content:space-between; margin-bottom:4px;"><span>Thinking</span><span>${perT}%</span></div><div style="height:8px; background:#e2e8f0; border-radius:10px; margin-bottom:10px;"><div style="height:100%; width:${perT}%; background:linear-gradient(90deg, #6366f1, #8b5cf6); border-radius:10px;"></div></div>
+    <div style="font-size:13px; font-weight:700; display:flex; justify-content:space-between; margin-bottom:4px;"><span>Judging</span><span>${perJ}%</span></div><div style="height:8px; background:#e2e8f0; border-radius:10px;"><div style="height:100%; width:${perJ}%; background:linear-gradient(90deg, #6366f1, #8b5cf6); border-radius:10px;"></div></div>
+  `;
+
+  document.getElementById('careerTags').innerHTML = data.career.map(c => `<div style="background:#6366f1; color:white; padding:6px 12px; border-radius:20px; font-size:12px;">${c}</div>`).join('');
+
+  showPage('resultPage');
+}
+
+function downloadPNG() {
+  html2canvas(document.getElementById('resultCard')).then(canvas => {
+    const link = document.createElement('a');
+    link.download = 'hasil-tes.png';
+    link.href = canvas.toDataURL();
+    link.click();
+  });
+}
+
+function shareWA() {
+  window.open(`https://wa.me/?text=${encodeURIComponent(`Aku tipe ${myResult.type}! Cek kamu: ${window.location.href}`)}`);
+}
+
+function openCompare() { document.getElementById('compareModal').classList.add('active'); }
+function closeCompare() { document.getElementById('compareModal').classList.remove('active'); }
+
+function compare() {
+  const friendType = document.getElementById('friendType').value;
+  const friendName = document.getElementById('friendName').value || "Temen";
+  if(!friendType) return;
+
+  const myType = myResult.type;
+  const isMatch = types[myType].match.some(m => friendType.startsWith(m[0]));
+
+  document.getElementById('compareResult').innerHTML = `
+    <div style="background:#f0fdf4; padding:15px; border-radius:12px;">
+      <b>Kamu: ${myType}</b><br>
+      <b>${friendName}: ${friendType}</b><br><br>
+      ${isMatch? "🤝 Kalian cocok! Saling melengkapi." : "⚡ Kalian beda! Bisa belajar dari perbedaan."}
+    </div>
+  `;
+}
+
+function goToLanding() {
+  currentQ = 0; answers = {E:0,I:0,T:0,F:0,J:0,P:0};
+  showPage('landingPage');
+}
+</script>
+
+</body>
+</html>
